@@ -4,28 +4,14 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import confusion_matrix, accuracy_score
 from yellowbrick.classifier import ConfusionMatrix
+from handle_credits import load_credits, encode_credits
 
 
 # Load dataset, with the input predictors and output group
-credit = pd.read_csv('Credit.csv')
-predictors = credit.iloc[:,0:20].values
-group = credit.iloc[:,20].values
+credit, predictors, group = load_credits()
 
 # Convert non numeric inputs to numeric inputs by LabelEncoder
-labelencoder = LabelEncoder()
-predictors[:,0] = labelencoder.fit_transform(predictors[:,0])
-predictors[:,2] = labelencoder.fit_transform(predictors[:,2])
-predictors[:, 3] = labelencoder.fit_transform(predictors[:, 3])
-predictors[:, 5] = labelencoder.fit_transform(predictors[:, 5])
-predictors[:, 6] = labelencoder.fit_transform(predictors[:, 6])
-predictors[:, 8] = labelencoder.fit_transform(predictors[:, 8])
-predictors[:, 9] = labelencoder.fit_transform(predictors[:, 9])
-predictors[:, 11] = labelencoder.fit_transform(predictors[:, 11])
-predictors[:, 13] = labelencoder.fit_transform(predictors[:, 13])
-predictors[:, 14] = labelencoder.fit_transform(predictors[:, 14])
-predictors[:, 16] = labelencoder.fit_transform(predictors[:, 16])
-predictors[:, 18] = labelencoder.fit_transform(predictors[:, 18])
-predictors[:, 19] = labelencoder.fit_transform(predictors[:, 19])
+predictors, labelencoder = encode_credits(predictors)
 
 
 # Fit naive bayes model
@@ -43,29 +29,14 @@ confusion = confusion_matrix(y_test, predictions)
 acc_rate = accuracy_score(y_test, predictions)
 error_rate = 1 - acc_rate
 
-
 # Improve visual of confusion matrix with yellow brick library
 v = ConfusionMatrix(GaussianNB())
 v.fit(X_train, y_train)
 v.score(X_test, y_test)
 v.poof()
 
-
 # Predict given a new unseen production case
-new_credit = pd.read_csv('NewCredit.csv')
-new_credit = new_credit.iloc[:,0:20].values
-new_credit[:,0] = labelencoder.fit_transform(new_credit[:,0])
-new_credit[:, 2] = labelencoder.fit_transform(new_credit[:, 2])
-new_credit[:, 3] = labelencoder.fit_transform(new_credit[:, 3])
-new_credit[:, 5] = labelencoder.fit_transform(new_credit[:, 5])
-new_credit[:, 6] = labelencoder.fit_transform(new_credit[:, 6])
-new_credit[:, 8] = labelencoder.fit_transform(new_credit[:, 8])
-new_credit[:, 9] = labelencoder.fit_transform(new_credit[:, 9])
-new_credit[:, 11] = labelencoder.fit_transform(new_credit[:, 11])
-new_credit[:, 13] = labelencoder.fit_transform(new_credit[:, 13])
-new_credit[:, 14] = labelencoder.fit_transform(new_credit[:, 14])
-new_credit[:, 16] = labelencoder.fit_transform(new_credit[:, 16])
-new_credit[:, 18] = labelencoder.fit_transform(new_credit[:, 18])
-new_credit[:, 19] = labelencoder.fit_transform(new_credit[:, 19])
+_, new_credit, _ = load_credits('NewCredit.csv', production=True)
+new_credit, labelencoder = encode_credits(new_credit, labelencoder)
 
 new_prediction = naive_bayes.predict(new_credit)
