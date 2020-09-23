@@ -4,6 +4,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import confusion_matrix, accuracy_score
 
+
 # Load dataset, with the input predictors and output group
 credit = pd.read_csv('Credit.csv')
 predictors = credit.iloc[:,0:20].values
@@ -33,5 +34,12 @@ X_train, X_test, y_train, y_test = train_test_split(predictors,
                                                     random_state = 0)
 naive_bayes = GaussianNB()
 naive_bayes.fit(X_train, y_train)
+
+
+# Make predictions with the fitted model based on test data
+predictions = naive_bayes.predict(X_test)
+confusion = confusion_matrix(y_test, predictions)
+acc_rate = accuracy_score(y_test, predictions)
+error_rate = 1 - acc_rate
 
 
