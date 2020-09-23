@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import confusion_matrix, accuracy_score
+from yellowbrick.classifier import ConfusionMatrix
 
 
 # Load dataset, with the input predictors and output group
@@ -42,4 +43,10 @@ confusion = confusion_matrix(y_test, predictions)
 acc_rate = accuracy_score(y_test, predictions)
 error_rate = 1 - acc_rate
 
+
+# Improve visual of confusion matrix with yellow brick library
+v = ConfusionMatrix(GaussianNB())
+v.fit(X_train, y_train)
+v.score(X_test, y_test)
+v.poof()
 
