@@ -29,17 +29,14 @@ confusion = confusion_matrix(y_test, predictions)
 acc_rate = accuracy_score(y_test, predictions)
 error_rate = 1 - acc_rate
 
-
 # Improve visual of confusion matrix with yellow brick library
 v = ConfusionMatrix(GaussianNB())
 v.fit(X_train, y_train)
 v.score(X_test, y_test)
 v.poof()
 
-
 # Predict given a new unseen production case
 _, new_credit, _ = load_credits('NewCredit.csv', production=True)
 new_credit, labelencoder = encode_credits(new_credit, labelencoder)
-
 
 new_prediction = naive_bayes.predict(new_credit)
