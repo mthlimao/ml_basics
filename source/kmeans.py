@@ -12,3 +12,9 @@ unique, quantity = np.unique(iris.target, return_counts = True)
 # Creat clusters with KMeans
 cluster = KMeans(n_clusters = 3)
 cluster.fit(iris.data)
+
+# Make confusion matrix
+centroids = cluster.cluster_centers_
+predictions = cluster.labels_
+
+confusion = confusion_matrix(iris.target, predictions)
