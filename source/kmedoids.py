@@ -18,3 +18,18 @@ v = cluster_visualizer()
 v.append_clusters(predictions, iris.data[:,0:2])
 v.append_cluster(medoids, data = iris.data[:,0:2], marker = '*', markersize = 15)
 v.show()
+
+# Generate Confusion Matrix
+lst_predictions = []
+lst_real = []
+for i in range(len(predictions)):
+    print('----')
+    print(i)
+    print('----')
+    for j in range(len(predictions[i])):
+        lst_predictions.append(i)
+        lst_real.append(iris.target[predictions[i][j]])
+        lst_predictions
+lst_predictions = np.asarray(lst_predictions)
+lst_real = np.asarray(lst_real)
+results = confusion_matrix(lst_real, lst_predictions)
