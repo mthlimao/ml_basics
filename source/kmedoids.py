@@ -12,3 +12,9 @@ cluster.get_medoids()
 cluster.process()
 predictions = cluster.get_clusters()
 medoids = cluster.get_medoids()
+
+# Visualize Medoids
+v = cluster_visualizer()
+v.append_clusters(predictions, iris.data[:,0:2])
+v.append_cluster(medoids, data = iris.data[:,0:2], marker = '*', markersize = 15)
+v.show()
