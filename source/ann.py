@@ -18,3 +18,11 @@ numpy.random.seed(seed)
 iris = datasets.load_iris()
 X = iris.data
 Y = iris.target
+
+# Encode class values as integers
+encoder = LabelEncoder()
+encoder.fit(Y)
+encoded_Y = encoder.transform(Y)
+
+# Convert integers to dummy variables (i.e. one hot encoded)
+dummy_y = np_utils.to_categorical(encoded_Y)
