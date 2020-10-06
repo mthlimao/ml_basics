@@ -1,6 +1,6 @@
 import time
 import numpy as np
-import pandas
+import pandas as pd
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.wrappers.scikit_learn import KerasClassifier
@@ -12,6 +12,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
+from sklearn.metrics import confusion_matrix
 
 # Fix random seed for reproducibility
 seed = 0
@@ -60,3 +61,18 @@ print("Grid scores obtained: ")
 for mean, std, params in zip(means, stds, results.cv_results_['params']):
     print(f"{mean:.4f} (+/-{std:.4f}) using {params}")
 print()
+
+# Generate Confusion Matrix
+best_model = grid.best_estimator_['mlp'].model
+X_std = StandardScaler().fit_transform(X)
+predictions = best_model.predict(X_std)
+
+predictions_df = pd.DataFrame({'0': predictions[:,0], '1': predictions[:,1], '2': predictions[:,2]})
+Y_pred = np.array([])
+
+for i in range(predictions_df.shape[0]):        
+    c = predictions_df.iloc[i, :].tolist().index(np.max(predictions_df.iloc[i, :]))
+    Y_pred = np.append(Y_pred, c)
+
+results = confusion_matrix(Y, Y_pred)        
+        
