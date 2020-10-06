@@ -1,3 +1,4 @@
+import time
 import numpy as np
 import pandas
 from keras.models import Sequential
@@ -14,7 +15,7 @@ from sklearn.pipeline import Pipeline
 
 # Fix random seed for reproducibility
 seed = 0
-numpy.random.seed(seed)
+np.random.seed(seed)
 
 # Load iris dataset
 iris = datasets.load_iris()
@@ -39,8 +40,23 @@ def simple_model():
     return model
 
 # Define hyperparameter to be optimized, estimator, pipeline and grid
-epochs = np.array([150, 250, 500])
+epochs = [100, 200, 500]
 
 estimator = KerasClassifier(build_fn=simple_model, batch_size=5, verbose=0)
 pipeline = Pipeline([('standardize', StandardScaler()), ('mlp', estimator)])
 param_grid = dict(mlp__epochs=epochs)
+
+grid = GridSearchCV(estimator=pipeline, param_grid=param_grid, cv=10)
+results = grid.fit(X, dummy_y)
+
+print(f"Best parameters for simple_model:")
+print(f"{results.best_params_}")
+print()
+
+means = grid.cv_results_['mean_test_score']
+stds = grid.cv_results_['std_test_score']
+
+print("Grid scores obtained: ")
+for mean, std, params in zip(means, stds, results.cv_results_['params']):
+    print(f"{mean:.4f} (+/-{std:.4f}) using {params}")
+print()
